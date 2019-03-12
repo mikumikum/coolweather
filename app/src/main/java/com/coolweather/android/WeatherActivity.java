@@ -1,6 +1,5 @@
 package com.coolweather.android;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -33,9 +32,13 @@ import okhttp3.Response;
 
 public class WeatherActivity extends AppCompatActivity {
 
+    //滑动菜单
     public DrawerLayout drawerLayout;
+    //进度条
     public SwipeRefreshLayout swipeRefresh;
+    //可上下滑动布局
     private ScrollView weatherLayout;
+    //菜单按钮
     private Button navButton;
     private TextView titleCity;
     private TextView titleUpdateTime;
@@ -48,6 +51,7 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView carWashText;
     private TextView sportText;
     private ImageView bingPicImg;
+    //用于记录城市的天气id
     private String mWeatherId;
 
     @Override
@@ -76,6 +80,7 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText = findViewById(R.id.car_wash_text);
         sportText = findViewById(R.id.sport_text);
         swipeRefresh = findViewById(R.id.swipe_refresh);
+        //设置下拉刷新进度条的颜色
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         drawerLayout = findViewById(R.id.drawer_layout);
         navButton = findViewById(R.id.nav_button);
@@ -150,7 +155,8 @@ public class WeatherActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(WeatherActivity.this, "获取天气信息失败",
+                                Toast.LENGTH_SHORT).show();
                         swipeRefresh.setRefreshing(false);
                     }
                 });
