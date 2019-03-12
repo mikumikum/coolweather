@@ -108,22 +108,22 @@ public class ChooseAreaFragment extends Fragment {
                     //当前点击等级为市级时，查询县级数据
                     selectedCity = cityList.get(position);
                     queryCounties();
-                }
-                        //todo  未实现方法
-//                else if (currentLevel == LEVEL_COUNTY) {
-//                    String weatherId = countyList.get(position).getWeatherId();
-//                    if (getActivity() instanceof MainActivity) {
-//                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
-//                        intent.putExtra("weather_id", weatherId);
-//                        startActivity(intent);
-//                        getActivity().finish();
-//                    } else if (getActivity() instanceof WeatherActivity) {
+                } else if (currentLevel == LEVEL_COUNTY) {
+                    String weatherId = countyList.get(position).getWeatherId();
+                    if (getActivity() instanceof MainActivity) {
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                    //todo 未实现
+//                    else if (getActivity() instanceof WeatherActivity) {
 //                        WeatherActivity activity = (WeatherActivity) getActivity();
 //                        activity.drawerLayout.closeDrawers();
 //                        activity.swipeRefresh.setRefreshing(true);
 //                        activity.requestWeather(weatherId);
 //                    }
-//                }
+                }
             }
         });
         //设置返回按钮点击事件
