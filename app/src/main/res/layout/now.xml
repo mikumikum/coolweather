@@ -6,13 +6,25 @@
     android:layout_height="wrap_content"
     android:layout_margin="15dp">
 
-    <TextView
-        android:id="@+id/degree_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:textColor="#fff"
-        android:textSize="60sp" />
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/weather_info_item"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/wz_weather"/>
+        <TextView
+            android:id="@+id/degree_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textColor="#fff"
+            android:textSize="60sp" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/weather_info_text"

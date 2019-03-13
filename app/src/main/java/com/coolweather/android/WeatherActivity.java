@@ -1,5 +1,6 @@
 package com.coolweather.android;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.coolweather.android.gson.Forecast;
 import com.coolweather.android.gson.Weather;
+import com.coolweather.android.service.AutoUpdateService;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
 
@@ -43,7 +45,10 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView titleCity;
     private TextView titleUpdateTime;
     private TextView degreeText;
+    //天气信息
     private TextView weatherInfoText;
+    //天气图标
+    private ImageView weatherInfoItem;
     private LinearLayout forecastLayout;
     private TextView aqiText;
     private TextView pm25Text;
@@ -73,6 +78,7 @@ public class WeatherActivity extends AppCompatActivity {
         titleUpdateTime = findViewById(R.id.title_update_time);
         degreeText = findViewById(R.id.degree_text);
         weatherInfoText = findViewById(R.id.weather_info_text);
+        weatherInfoItem = findViewById(R.id.weather_info_item);
         forecastLayout = findViewById(R.id.forecast_layout);
         aqiText = findViewById(R.id.aqi_text);
         pm25Text = findViewById(R.id.pm25_text);
@@ -86,7 +92,7 @@ public class WeatherActivity extends AppCompatActivity {
         navButton = findViewById(R.id.nav_button);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //获取天气缓存
-        String weatherString = prefs.getString("weather", null);
+        String weatherString = prefs.getString("logo", null);
         if (weatherString != null) {
             // 有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherString);
@@ -123,7 +129,7 @@ public class WeatherActivity extends AppCompatActivity {
      * 根据天气id请求城市天气信息。
      */
     public void requestWeather(final String weatherId) {
-        String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherId + "&key=3d75d0a3504d49d08d3ebf59a996dd72";
+        String weatherUrl = "http://guolin.tech/api/logo?cityid=" + weatherId + "&key=3d75d0a3504d49d08d3ebf59a996dd72";
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -136,7 +142,7 @@ public class WeatherActivity extends AppCompatActivity {
                         if (weather != null && "ok".equals(weather.status)) {
                             //将返回的数据存到SharedPreferences中
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
-                            editor.putString("weather", responseText);
+                            editor.putString("logo", responseText);
                             editor.apply();
                             mWeatherId = weather.basic.weatherId;
                             //将获取的数据显示在UI界面中
@@ -201,10 +207,11 @@ public class WeatherActivity extends AppCompatActivity {
         String degree = weather.now.temperature + "℃";
         String weatherInfo = weather.now.more.info;
         titleCity.setText(cityName);
-        titleUpdateTime.setText(updateTime);
+        titleUpdateTime.setText("更新于"+updateTime);
         degreeText.setText(degree);
         weatherInfoText.setText(weatherInfo);
         forecastLayout.removeAllViews();
+        weatherImageResource(weatherInfo);
         for (Forecast forecast : weather.forecastList) {
             View view = LayoutInflater.from(this).inflate(R.layout.forecast_item, forecastLayout, false);
             TextView dateText = view.findViewById(R.id.date_text);
@@ -229,8 +236,47 @@ public class WeatherActivity extends AppCompatActivity {
         sportText.setText(sport);
         //显示ScrollView重新变成可见
         weatherLayout.setVisibility(View.VISIBLE);
-//        Intent intent = new Intent(this, AutoUpdateService.class);
-//        startService(intent);
+        //激活后台自动更新数据服务
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
+    }
+
+    /**
+     * 随天气情况更新天气图标
+     * @param weatherInfo 天气情况数据
+     */
+    private void weatherImageResource(String weatherInfo) {
+        switch(weatherInfo){
+            case "晴":
+                weatherInfoItem.setImageResource(R.drawable.qing_weather);
+                break;
+            case "阴":
+                weatherInfoItem.setImageResource(R.drawable.yin_weather);
+                break;
+            case "多云":
+                weatherInfoItem.setImageResource(R.drawable.dyun_weather);
+                break;
+            case "小雨":
+                weatherInfoItem.setImageResource(R.drawable.xyu_weather);
+                break;
+            case "大雨":
+                weatherInfoItem.setImageResource(R.drawable.dyu_weather);
+                break;
+            case "暴雨":
+                weatherInfoItem.setImageResource(R.drawable.byu_weather);
+                break;
+            case "阵雨":
+                weatherInfoItem.setImageResource(R.drawable.zyu_weather);
+                break;
+            case "雷阵雨":
+                weatherInfoItem.setImageResource(R.drawable.lzyu_weather);
+                break;
+            case "大雾":
+                weatherInfoItem.setImageResource(R.drawable.dw_weather);
+                break;
+            default:
+                break;
+        }
     }
 
 }
